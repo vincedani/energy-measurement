@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import serial, time
+import serial, time, sys
 from enum import Enum
 
 class Command(Enum):
@@ -19,11 +19,23 @@ def send_message(command : Command, msg : str):
     message = { 'command' : command.value, 'msg': msg }
     serial_port.write('{}\n'.format(message).encode())
 
+    response = serial_port.readline().decode()
+    if response:
+      print('[ERROR] Request: {}. Response: {} '.format(message, response))
+      sys.exit(1)
 
+
+# Tests
 time.sleep(2)
 send_message(Command.START, 'test_sender.py:24')
 
+time.sleep(2)
+send_message(Command.START, 'test_sender.py:27')
+
 time.sleep(4)
+send_message(Command.STOP, 'test_sender.py:24')
+
+time.sleep(1)
 send_message(Command.STOP, 'test_sender.py:27')
 
 time.sleep(0.5)
