@@ -27,5 +27,5 @@ def read():
     print(e)
 
 if __name__ == "__main__":
-   s.enter(0, 2, read, ())
-   s.run()
+  s.enter(0, 2, read, ())
+  s.run()
