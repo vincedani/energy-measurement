@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 
-import threading, serial, sys, copy
-import sched, time, datetime
+import threading
+import serial
+import sys
+import copy
+import sched
+import time
+import datetime
+import os
+import logging
+
 from enum import Enum
 from ina219 import INA219
 from ina219 import DeviceRangeError
+from systemd import journal
+
 
 class Command(Enum):
   START     = 1
@@ -31,19 +41,22 @@ current_message = ''
 SHUNT_OHMS = 0.022
 SENSOR_ADDRESS = 0x40
 
+# Logger configuration
+logger = logging.getLogger('energy')
+logger.addHandler(journal.JournaldLogHandler())
+logger.setLevel(logging.INFO)
+
 ina = INA219(SHUNT_OHMS, address=SENSOR_ADDRESS)
 ina.configure()
 
 sensor_data = []
 
-# Logging function
-# TODO: When this script will be an Unix service, change logger to
-#       work with it.
+# Logger function
 def log(level : LogLevel, message: str):
-  print('{} [{}] {}'
-    .format(datetime.datetime.now().strftime('%H:%M:%S.%f'),
-            level.name,
-            message))
+  if level == LogLevel.ERROR:
+    logger.error(message)
+  else:
+    logger.info(message)
 
 def send_message(msg : str):
   if serial_port.is_open:
@@ -70,7 +83,7 @@ def measure_energy():
       # Current out of device range with specified shunt resister
       handle_error(LogLevel.INFO, e)
 
-  scheduler.enter(0.020, 2, measure_energy, ())
+  scheduler.enter(0.025, 2, measure_energy, ())
 
 def save_data():
   global sensor_data
@@ -78,7 +91,12 @@ def save_data():
   sd = copy.deepcopy(sensor_data)
   sensor_data = []
 
-  with open('{}.csv'.format(current_message), 'w') as outfile:
+  file_name = '{}/work/measurement_logs/{}_{}.csv'.format(
+    os.getenv("HOME"),
+    datetime.datetime.now().strftime('%H:%M:%S.%f'),
+    current_message)
+
+  with open(file_name, 'w') as outfile:
     outfile.write('TimeStamp, Voltage (V), Current (mA), Power (mW)\n')
     for data in sd:
       outfile.write('{},{:.3f},{:.3f},{:.3f}\n'.format(
@@ -133,5 +151,5 @@ thread = threading.Thread(target=read_from_port, args=(serial_port,))
 thread.start()
 
 if __name__ == "__main__":
-   scheduler.enter(0, 2, measure_energy, ())
-   scheduler.run()
+  scheduler.enter(0, 2, measure_energy, ())
+  scheduler.run()
