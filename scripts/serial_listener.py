@@ -38,7 +38,7 @@ is_measurement_running = False
 current_message = ''
 
 # INA219 Configuration
-SHUNT_OHMS = 0.022
+SHUNT_OHMS = 0.1
 SENSOR_ADDRESS = 0x40
 
 # Logger configuration

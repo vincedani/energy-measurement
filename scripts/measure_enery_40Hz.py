@@ -4,7 +4,7 @@ from ina219 import INA219
 from ina219 import DeviceRangeError
 import sched, time, datetime
 
-SHUNT_OHMS = 0.022
+SHUNT_OHMS = 0.1
 SENSOR_ADDRESS = 0x40
 
 s = sched.scheduler(time.time, time.sleep)
@@ -13,19 +13,19 @@ ina.configure()
 
 def read():
   try:
-    print('{0}, {1:.3f} V, {2:.3f} mA, {3:.3f} mW'
+    print('{},{:.3f},{:.3f},{:.3f}'
       .format(
         datetime.datetime.now().strftime('%H:%M:%S.%f'),
         ina.voltage(),
         ina.current(),
         ina.power()))
 
-    # ina.shunt_voltage(), ina.current(), ina.power()
     s.enter(0.020, 2, read, ())
   except DeviceRangeError as e:
     # Current out of device range with specified shunt resister
     print(e)
 
 if __name__ == "__main__":
+  print('TimeStamp, Voltage (V), Current (mA), Power (mW)\n')
   s.enter(0, 2, read, ())
   s.run()
