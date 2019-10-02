@@ -18,6 +18,9 @@ def load_input_file(input_file):
     lines = csv.reader(csvfile, delimiter=',')
 
     for line in lines:
+      if line[0] == 'TimeStamp':
+        continue
+
       time_values.append(datetime.datetime.strptime(line[0], '%H:%M:%S.%f'))
       voltage_values.append(float(line[1]))
       current_values.append(float(line[2]))

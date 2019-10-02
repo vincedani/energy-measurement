@@ -47,7 +47,8 @@ logger.addHandler(journal.JournaldLogHandler())
 logger.setLevel(logging.INFO)
 
 ina = INA219(SHUNT_OHMS, address=SENSOR_ADDRESS)
-ina.configure()
+ina.configure(bus_adc=ina.ADC_128SAMP,
+              shunt_adc=ina.ADC_128SAMP)
 
 sensor_data = []
 
@@ -83,7 +84,7 @@ def measure_energy():
       # Current out of device range with specified shunt resister
       handle_error(LogLevel.INFO, e)
 
-  scheduler.enter(0.025, 2, measure_energy, ())
+  scheduler.enter(0.015, 0, measure_energy, ())
 
 def save_data():
   global sensor_data
@@ -91,9 +92,8 @@ def save_data():
   sd = copy.deepcopy(sensor_data)
   sensor_data = []
 
-  file_name = '{}/work/measurement_logs/{}_{}.csv'.format(
-    os.getenv("HOME"),
-    datetime.datetime.now().strftime('%H:%M:%S.%f'),
+  file_name = '/home/pi/work/measurement_logs/{}_{}.csv'.format(
+    datetime.datetime.now().strftime('%H_%M_%S_%f'),
     current_message)
 
   with open(file_name, 'w') as outfile:
@@ -122,9 +122,8 @@ def read_from_port(ser):
       if command == Command.START:
         if is_measurement_running:
           is_measurement_running = False
-          handle_error(
-            LogLevel.ERROR,
-            'Duplicated request: Measurement has already started ({}). Terminate.'.format(current_message))
+          handle_error(LogLevel.ERROR,
+                       'Duplicated request: Measurement has already started ({}). Terminate.'.format(current_message))
 
         else:
           current_message = dictionary.get('msg')
@@ -135,9 +134,8 @@ def read_from_port(ser):
 
         msg = dictionary.get('msg')
         if current_message != msg:
-          handle_error(
-            LogLevel.ERROR,
-            'Invalid measurement was stopped: {}. The running session ({}) is dropped.'.format(msg, current_message))
+          handle_error(LogLevel.ERROR,
+                       'Invalid measurement was stopped: {}. The running session ({}) is dropped.'.format(msg, current_message))
         else:
           save_data()
 
@@ -151,5 +149,5 @@ thread = threading.Thread(target=read_from_port, args=(serial_port,))
 thread.start()
 
 if __name__ == "__main__":
-  scheduler.enter(0, 2, measure_energy, ())
+  scheduler.enter(0, 0, measure_energy, ())
   scheduler.run()

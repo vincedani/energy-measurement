@@ -11,6 +11,9 @@ sudo pip3 install pi-ina219
 sudo pip3 install systemd
 ```
 
+TODO: document this
+https://tutorials-raspberrypi.com/raspberry-pi-ftp-server-installation/
+
 These packages are required to use the systemd properly.
 
 ## Create a configuration file
