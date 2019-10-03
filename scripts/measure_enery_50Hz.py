@@ -9,9 +9,8 @@ SENSOR_ADDRESS = 0x40
 
 s = sched.scheduler(time.time, time.sleep)
 ina = INA219(SHUNT_OHMS, address=SENSOR_ADDRESS)
-ina.configure(bus_adc=ina.ADC_128SAMP,
-              shunt_adc=ina.ADC_128SAMP,
-              voltage_range=ina.RANGE_16V)
+ina.configure(bus_adc=ina.ADC_12BIT,
+              shunt_adc=ina.ADC_12BIT)
 
 def read():
   try:

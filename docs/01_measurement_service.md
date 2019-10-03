@@ -13,6 +13,7 @@ sudo pip3 install systemd
 
 TODO: document this
 https://tutorials-raspberrypi.com/raspberry-pi-ftp-server-installation/
+https://www.patchesoft.com/learn-linux-installing-and-configuring-ftp-with-proftpd
 
 These packages are required to use the systemd properly.
 

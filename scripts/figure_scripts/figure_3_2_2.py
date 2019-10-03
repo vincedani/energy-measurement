@@ -20,11 +20,9 @@ n1 = 0
 n2 = 1
 count = 0
 
-send_message(Command.START, 'fibonacci')
-time.sleep(1)
+send_message(Command.START, 'figure_3_2_1_part_1')
 
 fibonacci_sequence = [ n2 ]
-
 while count < nterms:
     nth = n1 + n2
     fibonacci_sequence.append(nth)
@@ -34,11 +32,11 @@ while count < nterms:
     n2 = nth
     count += 1
 
-time.sleep(1)
+send_message(Command.STOP, 'figure_3_2_1_part_1')
+send_message(Command.START, 'figure_3_2_1_part_2')
 
 with open('fibonacci_sequence.txt', 'w') as f:
     for item in fibonacci_sequence:
         f.write('{}, '.format(item))
 
-time.sleep(1)
-send_message(Command.STOP, 'fibonacci')
+send_message(Command.STOP, 'figure_3_2_1_part_2')

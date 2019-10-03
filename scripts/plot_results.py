@@ -64,16 +64,14 @@ if __name__ == '__main__':
   time, voltage, current, power = load_input_files(args.input)
   subplot_columns = len(args.input)
   subplot_rows = args.current + args.voltage + (not args.no_power)
-  plot_index = 0
 
-  plt.suptitle(args.title)
+  plot_index = 0
+  color_index = 5 # black
+
+  plt.suptitle(args.title, fontsize=26)
   for index in range(0, subplot_columns):
     current_plot_row = 1
     plot_index = index + 1
-
-    color_index = 5 # black
-    if subplot_columns > 1:
-      color_index = random.randrange(0, len(PLOT_COLORS))
 
     t = time[index]
     u = voltage[index]
@@ -83,8 +81,8 @@ if __name__ == '__main__':
     if args.current:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
       plt.plot(t, u, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)')
-      plt.ylabel('Voltage (V)')
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Voltage (V)', fontsize=20)
       plt.grid(True)
       plot_index += subplot_columns
 
@@ -92,8 +90,8 @@ if __name__ == '__main__':
     if args.voltage:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
       plt.plot(t, i, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)')
-      plt.ylabel('Current (mA)')
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Current (mA)', fontsize=20)
       plt.grid(True)
       plot_index += subplot_columns
 
@@ -101,7 +99,7 @@ if __name__ == '__main__':
     if not args.no_power:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
       plt.plot(t, p, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)')
-      plt.ylabel('Power (mW)')
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Power (mW)', fontsize=20)
       plt.grid(True)
   plt.show()

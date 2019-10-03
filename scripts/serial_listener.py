@@ -47,8 +47,8 @@ logger.addHandler(journal.JournaldLogHandler())
 logger.setLevel(logging.INFO)
 
 ina = INA219(SHUNT_OHMS, address=SENSOR_ADDRESS)
-ina.configure(bus_adc=ina.ADC_128SAMP,
-              shunt_adc=ina.ADC_128SAMP)
+ina.configure(bus_adc=ina.ADC_12BIT,
+              shunt_adc=ina.ADC_12BIT)
 
 sensor_data = []
 
