@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import csv
-import random
 import datetime
 import argparse
 import matplotlib.pyplot as plt
+from statistics import mean
 
 PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'k', 'w' ]
 
@@ -45,6 +45,44 @@ def load_input_files(input_files):
   return [time_values, voltage_values, current_values, power_values]
 
 
+def show_subplots(time, voltage, current, power, args, color_index):
+  subplot_columns = len(args.input)
+  subplot_rows = args.current + args.voltage + (not args.no_power)
+  color = PLOT_COLORS[color_index]
+
+  plot_index = 0
+
+  plt.suptitle(args.title, fontsize=26)
+  for index in range(0, subplot_columns):
+    plot_index = index + 1
+
+    if args.current:
+      plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.plot(time[index], voltage[index], color=color)
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Voltage (V)', fontsize=20)
+      plt.grid(True)
+      plot_index += subplot_columns
+
+
+    if args.voltage:
+      plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.plot(time[index], current[index], color=color)
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Current (mA)', fontsize=20)
+      plt.grid(True)
+      plot_index += subplot_columns
+
+
+    if not args.no_power:
+      plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.plot(time[index], power[index], color=color)
+      plt.xlabel('Time (s)', fontsize=20)
+      plt.ylabel('Power (mW)', fontsize=20)
+      plt.grid(True)
+  plt.show()
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -58,48 +96,25 @@ if __name__ == '__main__':
                       help='Input CSV file(s) to process.')
   parser.add_argument('--title', default='Untitled',
                       help='The title of the generated plot.')
+  parser.add_argument('--statistics', action='store_true', default=False,
+                      help='Print statistics from the given files instead of plotting them.')
 
   args = parser.parse_args()
 
   time, voltage, current, power = load_input_files(args.input)
-  subplot_columns = len(args.input)
-  subplot_rows = args.current + args.voltage + (not args.no_power)
 
-  plot_index = 0
-  color_index = 5 # black
+  if not args.statistics:
+    show_subplots(time, voltage, current, power, args, PLOT_COLORS.index('k'))
 
-  plt.suptitle(args.title, fontsize=26)
-  for index in range(0, subplot_columns):
-    current_plot_row = 1
-    plot_index = index + 1
-
+  for index in range(0, len(args.input)):
     t = time[index]
-    u = voltage[index]
-    i = current[index]
-    p = power[index]
 
-    if args.current:
-      plt.subplot(subplot_rows, subplot_columns, plot_index)
-      plt.plot(t, u, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)', fontsize=20)
-      plt.ylabel('Voltage (V)', fontsize=20)
-      plt.grid(True)
-      plot_index += subplot_columns
+    print('Statistics fot the input file: {}'.format(args.input[index]))
+    print('  average:')
+    print('    voltage: {:.3f} V'.format(mean(voltage[index])))
+    print('    current: {:.3f} mA'.format(mean(current[index])))
+    print('    power:   {:.3f} mW'.format(mean(power[index])))
+    print('  measurement time: {}'.format(t[len(t) -1 ] - t[0]))
+    print()
 
-
-    if args.voltage:
-      plt.subplot(subplot_rows, subplot_columns, plot_index)
-      plt.plot(t, i, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)', fontsize=20)
-      plt.ylabel('Current (mA)', fontsize=20)
-      plt.grid(True)
-      plot_index += subplot_columns
-
-
-    if not args.no_power:
-      plt.subplot(subplot_rows, subplot_columns, plot_index)
-      plt.plot(t, p, color=PLOT_COLORS[color_index])
-      plt.xlabel('Time (s)', fontsize=20)
-      plt.ylabel('Power (mW)', fontsize=20)
-      plt.grid(True)
-  plt.show()
+  print('Done.')

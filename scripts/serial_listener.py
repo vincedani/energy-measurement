@@ -121,7 +121,6 @@ def read_from_port(ser):
 
       if command == Command.START:
         if is_measurement_running:
-          is_measurement_running = False
           handle_error(LogLevel.ERROR,
                        'Duplicated request: Measurement has already started ({}). Terminate.'.format(current_message))
 
@@ -136,6 +135,8 @@ def read_from_port(ser):
         if current_message != msg:
           handle_error(LogLevel.ERROR,
                        'Invalid measurement was stopped: {}. The running session ({}) is dropped.'.format(msg, current_message))
+          global sensor_data
+          sensor_data = []
         else:
           save_data()
 

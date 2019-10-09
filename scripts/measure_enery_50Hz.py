@@ -27,6 +27,6 @@ def read():
     print(e)
 
 if __name__ == "__main__":
-  print('TimeStamp, Voltage (V), Current (mA), Power (mW)\n')
+  print('TimeStamp, Voltage (V), Current (mA), Power (mW)')
   s.enter(0, 0, read, ())
   s.run()
