@@ -15,6 +15,20 @@ sudo pip3 install systemd
 
 These packages are required to use the systemd properly.
 
+Create `work` folder in the home directory.
+
+```
+cd ~ && mkdir work && cd work
+$ pwd
+/home/pi/work
+```
+
+Download `scripts/serial_listener.py` to the work folder.
+
+```
+chmod +x serial_listener.py
+```
+
 ### Create a configuration file
 
 ```sh
