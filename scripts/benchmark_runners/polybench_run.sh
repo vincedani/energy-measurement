@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 energy_root=$(cd $(dirname ${0})/../../;pwd)
 benchmark_dir=$1
 benchmarks=$(ls -1 $benchmark_dir)

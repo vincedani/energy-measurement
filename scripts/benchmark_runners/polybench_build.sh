@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 polybench_dir=$1
 benchmarks=$(cat $polybench_dir/utilities/benchmark_list)
 
