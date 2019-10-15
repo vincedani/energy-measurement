@@ -8,7 +8,7 @@ import sys
 import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append('../')
+sys.path.append('../communication_helpers/')
 
 from communication_helper import Command, send_message
 

@@ -16,7 +16,7 @@ void SendCommand(Command command, const char* message) {
   serialPrintf(fd, json, command, message);
 
   // 0.1 second sleep is neccessary for waiting the
-  // response of theenergy measurement device.
+  // response of the energy measurement device.
   usleep(100000);
 
   while (serialDataAvail (fd)) {
@@ -25,4 +25,3 @@ void SendCommand(Command command, const char* message) {
 
   fprintf(stderr, "\n");
 }
-

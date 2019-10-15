@@ -1,14 +1,14 @@
 /*
  * Compiling:
- * g++ tests/testCommunicationHelper_0.cpp \
- *   scripts/CommunicationHelper.h         \
- *   scripts/CommunicationHelper.c         \
+ * g++ tests/testCommunicationHelper_0.cpp               \
+ *   scripts/communication_helpers/CommunicationHelper.h \
+ *   scripts/communication_helpers/CommunicationHelper.c \
  *   -lwiringPi
  */
 
 #include <unistd.h>
 
-#include "../scripts/CommunicationHelper.h"
+#include "../scripts/communication_helpers/CommunicationHelper.h"
 
 int main() {
   SendCommand(START, "CppTest");

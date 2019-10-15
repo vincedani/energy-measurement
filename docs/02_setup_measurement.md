@@ -27,8 +27,8 @@ Only one running measurement is allowed, the second request is dropped and the r
 
 Existing implementations can be used to make measurements:
 
-* Python: [communication_helper.py](../scripts/communication_helper.py)
+* Python: [communication_helper.py](../scripts/communication_helpers/communication_helper.py)
 
-* C++:
+* C++: [CommunicationHelper.h](../scripts\communication_helpers\CommunicationHelper.h), [CommunicationHelper.c](../scripts\communication_helpers\CommunicationHelper.c)
 
 * JavaScript

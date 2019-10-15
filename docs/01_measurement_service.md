@@ -2,6 +2,10 @@
 
 ## Unix service for measuring energy
 
+To use the energy measurement service, the device have be connected to the INA-129 sensor. If the device is a Raspberry Pi 3, the following figure shows the proper wiring.
+
+![Figure 1](figures/INA219_basic_schem.png)
+
 ### Prerequisites
 
 Install the necessary packages with the following command.
@@ -17,7 +21,7 @@ These packages are required to use the systemd properly.
 
 Create `work` folder in the home directory.
 
-```
+```sh
 cd ~ && mkdir work && cd work
 $ pwd
 /home/pi/work
@@ -25,7 +29,7 @@ $ pwd
 
 Download `scripts/serial_listener.py` to the work folder.
 
-```
+```sh
 chmod +x serial_listener.py
 ```
 
