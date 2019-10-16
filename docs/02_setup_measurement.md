@@ -4,6 +4,16 @@ To use the energy measurement service, the two device have to send messages via 
 
 ![Figure 1](figures/RPi_UART_communication.png)
 
+## Clone the porject
+
+Clone this project to the Raspberry Pi.
+
+```sh
+cd ~
+git clone https://github.com/vincedani/energy-measurement.git
+export PYTHONPATH=$HOME/energy-measurement/:$PYTHONPATH
+```
+
 ## General information
 
 The measurement service listens to its serial port and respond to the given commands. It recognizes two types of commands: START and STOP.

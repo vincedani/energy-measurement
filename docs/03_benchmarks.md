@@ -1,12 +1,5 @@
 # Using benchmarks from thesis
 
-Clone this project to the Raspberry Pi.
-
-```sh
-cd ~
-git clone https://github.com/vincedani/energy-measurement.git
-```
-
 ## Sysbench
 
 Install the benchmark with the following command:
@@ -20,7 +13,7 @@ sysbench 0.4.12
 The [run_sysbench.sh](../scripts/benchmark_runners/run_sysbench.sh) script runs the benchmark with different parameters. It communicates with the energy-measurement service between runs.
 
 ```sh
-./scripts/benchmark_runners/run_sysbench.sh
+~/energy-measurement/scripts/benchmark_runners/sysbench_run.sh
 ```
 
 ## Polybench
@@ -41,7 +34,8 @@ mkdir build && cd build
 Run benchmarks:
 
 ```sh
+cd polybench-c-3.2/build
 ~/energy-measurement/scripts/benchmark_runners/polybench_run.sh ./
 ```
 
-## CoreMark Pro
+##

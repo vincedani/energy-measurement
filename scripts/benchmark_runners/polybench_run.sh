@@ -6,11 +6,12 @@ energy_root=$(cd $(dirname ${0})/../../;pwd)
 benchmark_dir=$1
 benchmarks=$(ls -1 $benchmark_dir)
 
-echo $energy_root
 for benchmark in $benchmarks
 do
-  # start energy measurement
+  $energy_root/scripts/tools/control_measurement.py start $benchmark
+
   runnable=${benchmark_dir}/${benchmark}
   $runnable
-  # stop energy measurement
+
+  $energy_root/scripts/tools/control_measurement.py stop $benchmark
 done

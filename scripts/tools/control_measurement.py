@@ -4,9 +4,7 @@ import os
 import sys
 import argparse
 
-sys.path.append('../')
-
-from communication_helpers.communication_helper import Command, send_message
+from scripts.communication_helpers.communication_helper import Command, send_message
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
