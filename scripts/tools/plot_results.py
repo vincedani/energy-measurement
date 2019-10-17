@@ -109,12 +109,12 @@ if __name__ == '__main__':
   for index in range(0, len(args.input)):
     t = time[index]
 
-    print('Statistics fot the input file: {}'.format(args.input[index]))
+    print('Statistics for the input file: {}'.format(args.input[index]))
     print('  average:')
     print('    voltage: {:.3f} V'.format(mean(voltage[index])))
     print('    current: {:.3f} mA'.format(mean(current[index])))
     print('    power:   {:.3f} mW'.format(mean(power[index])))
-    print('  measurement time: {}'.format(t[len(t) -1 ] - t[0]))
+    print('  measurement time: {}'.format(t[len(t) - 1 ] - t[0]))
     print()
 
   print('Done.')

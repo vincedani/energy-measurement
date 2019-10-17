@@ -7,10 +7,7 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append('../')
-
-from communication_helper import Command, send_message
+from scripts.communication_helpers.communication_helper import Command, send_message
 
 # change this value for a different result
 nterms = 10000

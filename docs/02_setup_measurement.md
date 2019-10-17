@@ -14,6 +14,8 @@ git clone https://github.com/vincedani/energy-measurement.git
 export PYTHONPATH=$HOME/energy-measurement/:$PYTHONPATH
 ```
 
+Whenever a new console is opened, the PYTHONPATH environment variable has to be set. It can be avoided via adding the export to the `~/.bashrc`.
+
 ## General information
 
 The measurement service listens to its serial port and respond to the given commands. It recognizes two types of commands: START and STOP.
