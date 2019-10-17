@@ -5,13 +5,17 @@ set -e
 energy_root=$(cd $(dirname ${0})/../../;pwd)
 
 ## File IO benchmark
-$energy_root/scripts/tools/control_measurement.py start sysbench_io
-
+$energy_root/scripts/tools/control_measurement.py start sysbench_io_prepare
 sysbench --test=fileio --file-total-size=2G prepare
-sysbench --test=fileio --file-total-size=2G --file-test-mode=rndrw --max-time=300 --max-requests=0 run
-sysbench --test=fileio --file-total-size=2G cleanup
+$energy_root/scripts/tools/control_measurement.py stop sysbench_io_prepare
 
-$energy_root/scripts/tools/control_measurement.py stop sysbench_io
+$energy_root/scripts/tools/control_measurement.py start sysbench_io_test
+sysbench --test=fileio --file-total-size=2G --file-test-mode=rndrw --max-time=300 --max-requests=0 run
+$energy_root/scripts/tools/control_measurement.py stop sysbench_io_test
+
+$energy_root/scripts/tools/control_measurement.py start sysbench_io_cleanup
+sysbench --test=fileio --file-total-size=2G cleanup
+$energy_root/scripts/tools/control_measurement.py stop sysbench_io_cleanup
 
 ## CPU benchmark
 for thread_cnt in {1..4}
@@ -24,9 +28,11 @@ do
 done
 
 ## Memory benchmark
-$energy_root/scripts/tools/control_measurement.py start sysbench_threads
+for thread_cnt in {1..4}
+do
+  $energy_root/scripts/tools/control_measurement.py start sysbench_memory_${thread_cnt}
 
-sysbench --test=threads --thread-locks=3 --max-time=30s run
+  sysbench --test=memory --num-threads=4 run
 
-$energy_root/scripts/tools/control_measurement.py start 
-
+  $energy_root/scripts/tools/control_measurement.py stop sysbench_memory_${thread_cnt}
+done
