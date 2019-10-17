@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+import argparse
 import csv
 import datetime
-import argparse
+import random
 import matplotlib.pyplot as plt
 from statistics import mean
 
-PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'k', 'w' ]
+PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'k']
 
 def load_input_file(input_file):
   time_values = []
@@ -83,6 +84,21 @@ def show_subplots(time, voltage, current, power, args, color_index):
   plt.show()
 
 
+def show_merged_plot(time, voltage, current, power, args):
+
+  plt.suptitle(args.title, fontsize=26)
+  plt.xlabel('Time (s)', fontsize=20)
+  plt.ylabel('Power (mW)', fontsize=20)
+  plt.grid(True)
+
+  for index in range(0, len(args.input)):
+    color_index = index if index < len(PLOT_COLORS) else 0
+    color = PLOT_COLORS[color_index]
+
+    plt.plot(time[index], power[index], color=color)
+  plt.show()
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -92,29 +108,35 @@ if __name__ == '__main__':
                       help='Show voltage values from the given CSV(s) on a subplot')
   parser.add_argument('--no-power', action='store_true', default=False,
                       help='Do not show power values from the given CSV(s) on a subplot')
-  parser.add_argument('input', nargs='+', default=[],
-                      help='Input CSV file(s) to process.')
-  parser.add_argument('--title', default='Untitled',
+  parser.add_argument('-m', '--merged', action='store_true', default=False,
+                      help='Show multiple measurements on the same plot.')
+  parser.add_argument('-t', '--title', default='Untitled',
                       help='The title of the generated plot.')
   parser.add_argument('--statistics', action='store_true', default=False,
                       help='Print statistics from the given files instead of plotting them.')
+  parser.add_argument('input', nargs='+', default=[],
+                      help='Input CSV file(s) to process.')
 
   args = parser.parse_args()
 
   time, voltage, current, power = load_input_files(args.input)
 
   if not args.statistics:
-    show_subplots(time, voltage, current, power, args, PLOT_COLORS.index('k'))
+    if args.merged:
+      show_merged_plot(time, voltage, current, power, args)
+    else:
+      show_subplots(time, voltage, current, power, args, PLOT_COLORS.index('k'))
 
-  for index in range(0, len(args.input)):
-    t = time[index]
+  else:
+    for index in range(0, len(args.input)):
+      t = time[index]
 
-    print('Statistics for the input file: {}'.format(args.input[index]))
-    print('  average:')
-    print('    voltage: {:.3f} V'.format(mean(voltage[index])))
-    print('    current: {:.3f} mA'.format(mean(current[index])))
-    print('    power:   {:.3f} mW'.format(mean(power[index])))
-    print('  measurement time: {}'.format(t[len(t) - 1 ] - t[0]))
-    print()
+      print('Statistics for the input file: {}'.format(args.input[index]))
+      print('  average:')
+      print('    voltage: {:.3f} V'.format(mean(voltage[index])))
+      print('    current: {:.3f} mA'.format(mean(current[index])))
+      print('    power:   {:.3f} mW'.format(mean(power[index])))
+      print('  measurement time: {}'.format(t[len(t) - 1 ] - t[0]))
+      print()
 
   print('Done.')

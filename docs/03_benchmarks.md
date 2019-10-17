@@ -38,4 +38,28 @@ cd polybench-c-3.2/build
 ~/energy-measurement/scripts/benchmark_runners/polybench_run.sh ./
 ```
 
-##
+## Iperf3 - networking
+
+Install the iperf3 with the following command:
+
+```sh
+sudo apt install iperf3
+$ iperf3 --version
+iperf 3.1.3
+```
+
+This application has to be installed onto the Raspberry Pi and a server too.
+
+Run the following command on the server:
+
+```sh
+iperf3 -s
+```
+
+This means that the application runs as server (`-s`) and starts listening at port 5201. On the Raspberry Pi, run the prepared script:
+
+```sh
+~/energy-measurement/scripts/benchmark_runners/iperf3_run.sh <server-ip-address>
+```
+
+It will benchmarking the network performance for 30 seconds.
