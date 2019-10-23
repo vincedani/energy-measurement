@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from statistics import mean
 
 PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'k']
+FILE_EXTENSION_LENGTH = 4
+FILE_TIMESTAMP_LENGTH = 16
 
 def load_input_file(input_file):
   time_values = []
@@ -59,6 +61,8 @@ def show_subplots(time, voltage, current, power, args, color_index):
 
     if args.current:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.xticks(fontsize=16)
+      plt.yticks(fontsize=16)
       plt.plot(time[index], voltage[index], color=color)
       plt.xlabel('Time (s)', fontsize=20)
       plt.ylabel('Voltage (V)', fontsize=20)
@@ -68,6 +72,8 @@ def show_subplots(time, voltage, current, power, args, color_index):
 
     if args.voltage:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.xticks(fontsize=16)
+      plt.yticks(fontsize=16)
       plt.plot(time[index], current[index], color=color)
       plt.xlabel('Time (s)', fontsize=20)
       plt.ylabel('Current (mA)', fontsize=20)
@@ -77,10 +83,14 @@ def show_subplots(time, voltage, current, power, args, color_index):
 
     if not args.no_power:
       plt.subplot(subplot_rows, subplot_columns, plot_index)
+      plt.xticks(fontsize=16)
+      plt.yticks(fontsize=16)
       plt.plot(time[index], power[index], color=color)
       plt.xlabel('Time (s)', fontsize=20)
       plt.ylabel('Power (mW)', fontsize=20)
       plt.grid(True)
+
+  plt.subplots_adjust(left=0.06, right=0.99, bottom=0.08, top=0.93)
   plt.show()
 
 
@@ -89,13 +99,20 @@ def show_merged_plot(time, voltage, current, power, args):
   plt.suptitle(args.title, fontsize=26)
   plt.xlabel('Time (s)', fontsize=20)
   plt.ylabel('Power (mW)', fontsize=20)
+  plt.xticks(fontsize=16)
+  plt.yticks(fontsize=16)
+
   plt.grid(True)
 
   for index in range(0, len(args.input)):
     color_index = index if index < len(PLOT_COLORS) else 0
     color = PLOT_COLORS[color_index]
 
-    plt.plot(time[index], power[index], color=color)
+    legend = args.input[index][FILE_TIMESTAMP_LENGTH:-FILE_EXTENSION_LENGTH]
+    plt.plot(time[index], power[index], color=color, label=legend)
+
+  plt.legend(prop={'size': 16})
+  plt.subplots_adjust(left=0.06, right=0.99, bottom=0.08, top=0.93)
   plt.show()
 
 
