@@ -1,3 +1,4 @@
 .vscode
 *.pyc
-scr/weather_station.db
+src/weather_station.db
+src/accuweather_api_key.txt
