@@ -1,0 +1,3 @@
+[submodule "SenseHat"]
+	path = SenseHat
+	url = https://github.com/vincedani/SenseHat.git
