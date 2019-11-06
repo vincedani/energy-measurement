@@ -2,7 +2,9 @@
 
 from scripts.communication_helpers.communication_helper import Command, send_message
 
+import time
 from sense_hat import SenseHat
+
 sense = SenseHat()
 
 B = (102, 51, 0)
@@ -21,20 +23,20 @@ pixels = [
     S, S, B, B, B, B, S, S
 ]
 
-sense.clear()
+for _ in range(10):
+    sense.clear()
+    send_message(Command.START, 'LED_show_message')
+    sense.show_message('TEST')
+    send_message(Command.STOP, 'LED_show_message')
 
-send_message(Command.START, 'LED_show_message')
-sense.show_message('TEST')
-send_message(Command.STOP, 'LED_show_message')
+    sense.clear()
+    send_message(Command.START, 'LED_show_letter')
+    sense.show_letter('A')
+    time.sleep(5)
+    send_message(Command.STOP, 'LED_show_letter')
 
-sense.clear()
-
-send_message(Command.START, 'LED_show_letter')
-sense.show_letter('A')
-send_message(Command.STOP, 'LED_show_letter')
-
-sense.clear()
-
-send_message(Command.START, 'LED_set_pixels')
-sense.set_pixels(pixels)
-send_message(Command.STOP, 'LED_set_pixels')
+    sense.clear()
+    send_message(Command.START, 'LED_set_pixels')
+    sense.set_pixels(pixels)
+    time.sleep(5)
+    send_message(Command.STOP, 'LED_set_pixels')

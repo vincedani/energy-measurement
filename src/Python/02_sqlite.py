@@ -2,6 +2,7 @@
 
 from scripts.communication_helpers.communication_helper import Command, send_message
 
+import os
 import sqlite3
 import datetime
 
@@ -43,5 +44,6 @@ def query_records():
   send_message(Command.STOP, 'query_record_sqlite3')
 
 if __name__ == "__main__":
-  insert_record()
-  query_records()
+  for _ in range(10):
+    insert_record()
+    query_records()

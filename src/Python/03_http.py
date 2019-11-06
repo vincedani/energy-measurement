@@ -2,6 +2,7 @@
 
 from scripts.communication_helpers.communication_helper import Command, send_message
 
+import os
 import sqlite3
 import requests
 import json
@@ -36,7 +37,10 @@ def http_post():
     }
     data.append(record)
 
-  response = requests.post(url = API_ENDPOINT, json = data, headers = headers)
+  try:
+    response = requests.post(url = API_ENDPOINT, json = data, headers = headers)
+  except:
+    pass
 
   send_message(Command.STOP, 'http_post')
 
@@ -61,5 +65,6 @@ def http_get():
   send_message(Command.STOP, 'http_get')
 
 if __name__ == "__main__":
-  http_post()
-  http_get()
+  for index in range(10):
+    http_post()
+    http_get()
