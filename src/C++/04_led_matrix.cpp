@@ -116,18 +116,16 @@ uint8_t ASCII_CHARACTERS[855]={
 
 #define ASCII_INDEX 95
 
-void StringTo8x8ByteBuffer(const char *str_in, uint8_t strlen, uint8_t *array_out)
-{
-
-    for (int i = 0; i < strlen; i++) {
-        for (int k = 0; k < ASCII_INDEX; k++) {
-            if (str_in[i] == ASCII_CHARACTERS[ k * 9]) {
-                for (int j = 0; j < 8; j++) {
-                    array_out[(i * 8) + j] = ASCII_CHARACTERS[((k * 9) + 1) + j];
-                }
-            }
+void StringTo8x8ByteBuffer(const char *str_in, uint8_t strlen, uint8_t *array_out) {
+  for (int i = 0; i < strlen; i++) {
+    for (int k = 0; k < ASCII_INDEX; k++) {
+      if (str_in[i] == ASCII_CHARACTERS[ k * 9]) {
+        for (int j = 0; j < 8; j++) {
+            array_out[(i * 8) + j] = ASCII_CHARACTERS[((k * 9) + 1) + j];
         }
+      }
     }
+  }
 }
 
 void showCharacter(SenseHAT& senseHat, const char *char_in) {
@@ -137,14 +135,14 @@ void showCharacter(SenseHAT& senseHat, const char *char_in) {
 
   StringTo8x8ByteBuffer(char_in, length, buffer);
 
-    for (int j = 0; j < 8; j++) {
-      std::bitset<8> charMap = std::bitset<8>(buffer[j]);
+  for (int j = 0; j < 8; j++) {
+    std::bitset<8> charMap = std::bitset<8>(buffer[j]);
 
-      for (std::size_t k = 0; k < charMap.size(); k++) {
-        if (charMap[k] == 1)
-          senseHat.set_pixel(j, k, 255, 255, 255);
-      }
+    for (std::size_t k = 0; k < charMap.size(); k++) {
+      if (charMap[k] == 1)
+        senseHat.set_pixel(j, k, 255, 255, 255);
     }
+  }
 }
 
 int main()

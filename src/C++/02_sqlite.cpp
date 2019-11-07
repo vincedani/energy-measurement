@@ -1,6 +1,6 @@
 /*
  * Compiling:
- * g++ -L../../SenseHat/build -lsense-hat 02_sqlite.cpp        \
+ * g++ 02_sqlite.cpp                                           \
  *   ../../scripts/communication_helpers/CommunicationHelper.h \
  *   ../../scripts/communication_helpers/CommunicationHelper.c \
  *   -lwiringPi                                                \
