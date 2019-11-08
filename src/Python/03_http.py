@@ -3,64 +3,37 @@
 from scripts.communication_helpers.communication_helper import Command, send_message
 
 import os
-import sqlite3
 import requests
 import json
 
-API_ENDPOINT = 'http://192.168.2.178/weather/add'
-DB_PATH = os.path.join(os.path.dirname(__file__), '../weather_station.db')
-
-# AccuWeather
-AW_API_KEY      = ''
-AW_API_KEY_PATH = os.path.join(os.path.dirname(__file__), '../accuweather_api_key.txt')
-AW_SZEGED_URL   = 'http://dataservice.accuweather.com/currentconditions/v1/187706'
+API_ENDPOINT = 'http://192.168.2.58/MockServer/api/weather/'
 
 def http_post():
-  connection = sqlite3.connect(DB_PATH)
-  cursor = connection.cursor()
+  data = [
+    { 'TimeStamp' : '23:33:14.695226', 'Temperature' : 24.893, 'Humidity' : 56.576, 'Pressure' : 998.634 },
+    { 'TimeStamp' : '23:33:33.805037', 'Temperature' : 24.963, 'Humidity' : 56.488, 'Pressure' : 998.640 },
+    { 'TimeStamp' : '23:34:02.239622', 'Temperature' : 25.177, 'Humidity' : 55.715, 'Pressure' : 998.687 },
+    { 'TimeStamp' : '23:34:54.227033', 'Temperature' : 24.939, 'Humidity' : 55.843, 'Pressure' : 998.686 },
+    { 'TimeStamp' : '23:39:44.063628', 'Temperature' : 24.980, 'Humidity' : 55.676, 'Pressure' : 998.705 }
+  ]
 
-  command = 'select * from Measurements order by ID desc limit 5'
-
-  cursor.execute(command)
-  rows = cursor.fetchall()
-
-  send_message(Command.START, 'http_post')
-
-  data = []
   headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
-  for row in rows:
-    record = {
-      'TimeStamp'   : row[1],
-      'Temperature' : row[2],
-      'Humidity'    : row[3],
-      'Pressure'    : row[4]
-    }
-    data.append(record)
+  send_message(Command.START, 'http_post')
 
   try:
     response = requests.post(url = API_ENDPOINT, json = data, headers = headers)
-  except:
-    pass
+  except Exception as e:
+    print(e)
 
   send_message(Command.STOP, 'http_post')
 
 
 def http_get():
-  with open(AW_API_KEY_PATH, 'r') as file:
-    AW_API_KEY = file.read()
-
   send_message(Command.START, 'http_get')
-  body = {
-    'apikey' : AW_API_KEY,
-    'details' : 'true'
-  }
 
-  response = requests.get(url = AW_SZEGED_URL, params = body)
-  response_json = response.json()[0]
-
-  temperature = response_json['Temperature']['Metric']['Value']
-  humidity = response_json['RelativeHumidity']
-  pressure = response_json['Pressure']['Metric']['Value']
+  url = '{}/{}'.format(API_ENDPOINT, '12')
+  response = requests.get(url = url)
+  response_json = response.json()
 
   send_message(Command.STOP, 'http_get')
 
