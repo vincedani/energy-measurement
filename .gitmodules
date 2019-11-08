@@ -1,3 +1,6 @@
 [submodule "SenseHat"]
 	path = SenseHat
 	url = https://github.com/vincedani/SenseHat.git
+[submodule "IoTjs"]
+	path = IoTjs
+	url = https://github.com/vincedani/iotjs.git
