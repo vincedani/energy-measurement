@@ -1,0 +1,10 @@
+
+{
+  "modules": {
+    "communication_helpers_module": {
+      "native_files": [],
+      "init": "Init_communication_helpers",
+      "cmakefile": "module.cmake"
+    }
+  }
+}
