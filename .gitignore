@@ -2,6 +2,7 @@
 *.pyc
 *.gch
 
+build
 src/weather_station.db
 src/accuweather_api_key.txt
 RTIMULib.ini

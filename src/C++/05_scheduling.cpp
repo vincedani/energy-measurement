@@ -4,6 +4,7 @@
  *   ../../scripts/communication_helpers/CommunicationHelper.h \
  *   ../../scripts/communication_helpers/CommunicationHelper.c \
  *   -lwiringPi
+ *   -lpthread
  */
 
 #include <ctime>
