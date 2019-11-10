@@ -4,6 +4,6 @@
 [submodule "IoTjs"]
 	path = IoTjs
 	url = https://github.com/vincedani/iotjs.git
-[submodule "IoTjs_sleep_module"]
-	path = IoTjs_sleep_module
+[submodule "iotjs_modules/sleep"]
+	path = iotjs_modules/sleep
 	url = https://github.com/hs0225/my_modules.git
