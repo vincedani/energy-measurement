@@ -1,0 +1,10 @@
+
+{
+  "modules": {
+    "sqlite_module": {
+      "native_files": [],
+      "init": "Init_SQLite",
+      "cmakefile": "module.cmake"
+    }
+  }
+}
