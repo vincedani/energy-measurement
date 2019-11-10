@@ -1,6 +1,6 @@
 /*
  * Compiling:
- * g++ 02_sqlite.cpp                                           \
+ * g++ 02_sqlite.cpp 02_sqlite.h                               \
  *   ../../scripts/communication_helpers/CommunicationHelper.h \
  *   ../../scripts/communication_helpers/CommunicationHelper.c \
  *   -lwiringPi                                                \
@@ -16,6 +16,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "02_sqlite.h"
 #include "../../scripts/communication_helpers/CommunicationHelper.h"
 
 using namespace std;

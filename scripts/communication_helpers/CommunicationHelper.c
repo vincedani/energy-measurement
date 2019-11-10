@@ -19,9 +19,12 @@ void SendCommand(Command command, const char* message) {
   // response of the energy measurement device.
   usleep(100000);
 
+  int hasResponse = 0;
   while (serialDataAvail (fd)) {
+    hasResponse = 1;
     fprintf(stderr, "%c", serialGetchar(fd));
   }
 
-  fprintf(stderr, "\n");
+  if (hasResponse)
+    fprintf(stderr, "\n");
 }
