@@ -9,19 +9,20 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <cstdlib>
 #include "../communication_helpers/CommunicationHelper.h"
 
 using namespace std;
 
-int main() {
-  unsigned long long int nterms = 100000;
+int main(int argc, char const *argv[]) {
+  unsigned long long int nterms = std::atoi(argv[1]);
 
   unsigned long long int n1 = 0;
   unsigned long long int n2 = 1;
   unsigned long long int nth = 0;
   unsigned long long int count = 0;
 
-  SendCommand(START, "fibonacci_cpp");
+  SendCommand(START, "fibonacci_cpp_0S");
   std::vector<unsigned long long int> sequence { n2 };
 
   while(count <= nterms) {
@@ -40,7 +41,7 @@ int main() {
   for (unsigned long long int i = 0; i < maxIndex; i++) {
     outFile << sequence.at(i) << ",";
   }
-  SendCommand(STOP, "fibonacci_cpp");
+  SendCommand(STOP, "fibonacci_cpp_0S");
 
   return 0;
 }

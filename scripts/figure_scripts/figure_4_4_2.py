@@ -10,8 +10,7 @@ import time
 from scripts.communication_helpers.communication_helper import Command, send_message
 
 # change this value for a different result
-nterms = 100000
-
+nterms = int(sys.argv[1])
 # first two terms
 n1 = 0
 n2 = 1
