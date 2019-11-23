@@ -9,14 +9,24 @@ import time
 
 from scripts.communication_helpers.communication_helper import Command, send_message
 
-# change this value for a different result
+def insertionSort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j] :
+                arr[j + 1] = arr[j]
+                j -= 1
+        arr[j + 1] = key
+
+    return arr
+
 nterms = int(sys.argv[1])
 # first two terms
 n1 = 0
 n2 = 1
 count = 0
 
-send_message(Command.START, 'fibonacci')
+send_message(Command.START, 'fibonacci_alg_python')
 
 fibonacci_sequence = [ n2 ]
 
@@ -29,11 +39,13 @@ while count < nterms:
     n2 = nth
     count += 1
 
-print ('Calculation done.')
-with open('fibonacci_sequence.txt', 'w') as f:
-    max_index = len(fibonacci_sequence) if len(fibonacci_sequence) < 15000 else 15000
+fibonacci_sequence.reverse()
+sorted_list = insertionSort(fibonacci_sequence)
+
+with open('fibonacci_sequence_python.txt', 'w') as f:
+    max_index = len(sorted_list) if len(sorted_list) < 15000 else 15000
 
     for index in range(max_index):
-        f.write('{},'.format(fibonacci_sequence[index]))
+        f.write('{},'.format(sorted_list[index]))
 
-send_message(Command.STOP, 'fibonacci')
+send_message(Command.STOP, 'fibonacci_alg_python')

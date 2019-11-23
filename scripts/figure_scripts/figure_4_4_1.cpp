@@ -10,9 +10,24 @@
 #include <vector>
 #include <fstream>
 #include <cstdlib>
+#include <algorithm>
 #include "../communication_helpers/CommunicationHelper.h"
 
 using namespace std;
+
+void insertionSort(std::vector<unsigned long long int>& arr, int n) {
+    int i, key, j;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
 
 int main(int argc, char const *argv[]) {
   unsigned long long int nterms = std::atoi(argv[1]);
@@ -33,6 +48,9 @@ int main(int argc, char const *argv[]) {
     n2 = nth;
     count++;
   }
+
+  std::reverse(sequence.begin(), sequence.end());
+  insertionSort(sequence, sequence.size());
 
   std::ofstream outFile;
   outFile.open("fibonacci_sequence_cpp.txt");
