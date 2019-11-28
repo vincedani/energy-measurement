@@ -47,10 +47,11 @@ logger.addHandler(journal.JournaldLogHandler())
 logger.setLevel(logging.INFO)
 
 ina = INA219(SHUNT_OHMS, address=SENSOR_ADDRESS)
-ina.configure(bus_adc=ina.ADC_12BIT,
-              shunt_adc=ina.ADC_12BIT)
+ina.configure(bus_adc=ina.ADC_9BIT,
+              shunt_adc=ina.ADC_9BIT)
 
 sensor_data = []
+start_time = datetime.datetime.now()
 
 # Logger function
 def log(level : LogLevel, message: str):
@@ -74,7 +75,7 @@ def measure_energy():
   if is_measurement_running:
     try:
       sensor_data.append({
-        't': datetime.datetime.now().strftime('%H:%M:%S.%f'),
+        't': (datetime.datetime.now() - start_time),
         'u': ina.voltage(),
         'i': ina.current(),
         'p': ina.power()
@@ -84,7 +85,7 @@ def measure_energy():
       # Current out of device range with specified shunt resister
       handle_error(LogLevel.INFO, e)
 
-  scheduler.enter(0.015, 0, measure_energy, ())
+  scheduler.enter(0.0005, 0, measure_energy, ())
 
 def save_data():
   global sensor_data
@@ -116,16 +117,19 @@ def read_from_port(ser):
 
       global is_measurement_running
       global current_message
+      global start_time
 
       command = Command(dictionary.get('command'))
 
       if command == Command.START:
         if is_measurement_running:
+          is_measurement_running = False
           handle_error(LogLevel.ERROR,
                        'Duplicated request: Measurement has already started ({}). Terminate.'.format(current_message))
 
         else:
           current_message = dictionary.get('msg')
+          start_time = datetime.datetime.now()
           is_measurement_running = True
 
       elif command == Command.STOP:
@@ -135,8 +139,6 @@ def read_from_port(ser):
         if current_message != msg:
           handle_error(LogLevel.ERROR,
                        'Invalid measurement was stopped: {}. The running session ({}) is dropped.'.format(msg, current_message))
-          global sensor_data
-          sensor_data = []
         else:
           save_data()
 

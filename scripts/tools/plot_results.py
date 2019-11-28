@@ -7,6 +7,7 @@ import datetime
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 from statistics import mean
 from scipy.ndimage.filters import gaussian_filter1d
@@ -15,6 +16,8 @@ PLOT_COLORS = ['b', 'g', 'r', 'c', 'm', 'k']
 FILE_EXTENSION_LENGTH = 4
 FILE_TIMESTAMP_LENGTH = 16
 SHORT_MEASUREMENT_TIC_COUNT = 450
+
+EPOCH = datetime.datetime(1900, 1, 1, 0, 0)
 
 def load_input_file(input_file):
   time_values = []
@@ -140,7 +143,6 @@ def show_merged_plot(time, voltage, current, power, args):
     legend = os.path.basename(args.input[index])
 
     axes = plt.gca()
-    # axes.set_ylim([1200,2600])
     axes.set_ylim([1300,1800])
     if args.interpolate:
       # power_values = gaussian_filter1d(power[index], sigma=2)
@@ -154,13 +156,52 @@ def show_merged_plot(time, voltage, current, power, args):
     if len(time[index]) < SHORT_MEASUREMENT_TIC_COUNT:
       plt.plot(time[index], power_values, 'o-', linewidth=2, markersize=3, color=color, label=legend)
     else:
-      plt.plot(time[index], power_values, color=color, label=legend)
+      plt.plot(time[index], power_values, color=color, label=legend, linewidth=2)
 
   plt.legend(prop={'size': 16})
   plt.subplots_adjust(left=0.06, right=0.99, bottom=0.08, top=0.93)
   # file_name = legend[:-FILE_EXTENSION_LENGTH]
   # plt.savefig('{}.png'.format(file_name), dpi=1000)
   plt.show()
+
+def calculate_energy_consumption(p, t):
+  deltas = []
+
+  for index in range(0, len(p)):
+    deltas.append((t[index] - EPOCH).total_seconds())
+
+  return np.trapz(p, deltas)
+
+
+def get_padding_length(length, time):
+  max_length = 0
+  max_delta = 0
+  for index in range(0, length):
+    delta = (time[index][len(time[index]) - 1 ] - time[index][0]).total_seconds()
+    lenth = len(time[index])
+
+    max_delta = delta if delta > max_delta else max_delta
+    max_length = lenth if lenth > max_length else max_length
+
+  return [max_length, max_delta]
+
+
+def pad_data(time, voltage, current, power, max_length, max_delta, input_length):
+  for index in range(0, input_length):
+    t = time[index]
+    u = voltage[index]
+    i = current[index]
+    p = power[index]
+
+    if len(t) == max_length:
+      continue
+
+    t.append(EPOCH + datetime.timedelta(seconds=max_delta))
+    u.append(min(u))
+    i.append(min(i))
+    p.append(min(p))
+
+  return [time, voltage, current, power]
 
 
 if __name__ == '__main__':
@@ -180,12 +221,18 @@ if __name__ == '__main__':
                       help='Print statistics from the given files instead of plotting them.')
   parser.add_argument('--interpolate', action='store_true', default=False,
                       help='Interpolate results before plotting.')
+  parser.add_argument('--pad', action='store_true', default=False,
+                      help='Add padding to results before plotting.')
   parser.add_argument('input', nargs='+', default=[],
                       help='Input CSV file(s) to process.')
 
   args = parser.parse_args()
 
   time, voltage, current, power = load_input_files(args.input)
+
+  if args.pad:
+    max_length, max_delta = get_padding_length(len(args.input), time)
+    pad_data(time, voltage, current, power, max_length, max_delta, len(args.input))
 
   if not args.statistics:
     if args.merged:
@@ -194,14 +241,22 @@ if __name__ == '__main__':
       show_subplots(time, voltage, current, power, args, PLOT_COLORS.index('k'))
 
   else:
-    print('Name,Length,Voltage,Current,Power')
+    print('Name,Length (s),Voltage (V),Current (mA),Power (mW), Energy consumption (Ws)')
+
     for index in range(0, len(args.input)):
       t = time[index]
+      u = voltage[index]
+      i = current[index]
+      p = power[index]
 
-      print('{},{},{:.3f},{:.3f},{:.3f}'.format(
+      delta = (t[len(t) - 1 ] - t[0]).total_seconds()
+      energy = calculate_energy_consumption(p, t) / 1000
+
+      print('{:<50}, {:>10.3f}, {:>10.3f}, {:>10.3f}, {:>10.3f}, {:>10.3f}'.format(
         os.path.basename(args.input[index])[:-FILE_EXTENSION_LENGTH],
-        t[len(t) - 1 ] - t[0],
-        mean(voltage[index]),
-        mean(current[index]),
-        mean(power[index])
+        delta,
+        mean(u),
+        mean(i),
+        mean(p),
+        energy
       ))
