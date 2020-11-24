@@ -15,6 +15,13 @@ from ina219 import INA219
 from ina219 import DeviceRangeError
 from systemd import journal
 
+from pymongo import MongoClient
+
+# uri = "mongodb://<connection-string>"
+# client = MongoClient(uri)
+
+# db = client.energyconsumption
+# collection = db.consumption
 
 class Command(Enum):
   START     = 1
@@ -75,10 +82,10 @@ def measure_energy():
   if is_measurement_running:
     try:
       sensor_data.append({
-        't': (datetime.datetime.now() - start_time),
-        'u': ina.voltage(),
-        'i': ina.current(),
-        'p': ina.power()
+        'time': str(datetime.datetime.now() - start_time),
+        'voltage': ina.voltage(),
+        'current': ina.current(),
+        'power': ina.power()
       })
 
     except DeviceRangeError as e:
@@ -92,19 +99,26 @@ def save_data():
 
   sd = copy.deepcopy(sensor_data)
   sensor_data = []
+  file_name = '{}_{}'.format(datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'), current_message)
 
-  file_name = '/home/pi/work/measurement_logs/{}_{}.csv'.format(
-    datetime.datetime.now().strftime('%H_%M_%S_%f'),
-    current_message)
+  # try:
+  #   collection.insert_one({
+  #     'name' : file_name,
+  #     'consumption': sd
+  #   })
+  # except Exception as e:
+  #   handle_error(LogLevel.ERROR, 'MongoDB error {}'.format(str(e)))
 
-  with open(file_name, 'w') as outfile:
+  path = '/home/pi/work/measurement_logs/{}.csv'.format(file_name)
+
+  with open(path, 'w') as outfile:
     outfile.write('TimeStamp, Voltage (V), Current (mA), Power (mW)\n')
     for data in sd:
       outfile.write('{},{:.3f},{:.3f},{:.3f}\n'.format(
-          data.get('t'),
-          data.get('u'),
-          data.get('i'),
-          data.get('p')
+          data.get('time'),
+          data.get('voltage'),
+          data.get('current'),
+          data.get('power')
       ))
 
 # This fution listens to the serial console in a separate thread
